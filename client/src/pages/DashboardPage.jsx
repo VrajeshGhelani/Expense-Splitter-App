@@ -26,10 +26,9 @@ const DashboardPage = () => {
     const params = new URLSearchParams(window.location.search);
     const token = params.get('token');
     if (token) {
-      window.history.replaceState({}, '', '/dashboard');
-      hydrateFromToken(token).catch(console.error);
+      window.location.replace(`/auth/callback?token=${token}`);
     }
-  }, [hydrateFromToken]);
+  }, []);
 
   useEffect(() => {
     const load = async () => {

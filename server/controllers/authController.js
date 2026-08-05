@@ -140,7 +140,7 @@ const googleCallback = [
               Signing you in, please wait...
             </p>
             <script>
-              window.location.replace('${clientUrl}/dashboard?token=${token}');
+              window.location.replace('${clientUrl}/auth/callback?token=${token}');
             </script>
           </body>
         </html>
