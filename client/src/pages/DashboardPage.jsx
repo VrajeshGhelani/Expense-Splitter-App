@@ -11,7 +11,7 @@ import MonthlyTrendChart from '../components/analytics/MonthlyTrendChart';
 import SummaryCards from '../components/analytics/SummaryCards';
 
 const DashboardPage = () => {
-  const { user } = useAuth();
+  const { user, hydrateFromToken } = useAuth();
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -21,16 +21,15 @@ const DashboardPage = () => {
   const [analyticsLoading, setAnalyticsLoading] = useState(true);
   const [showAnalytics, setShowAnalytics] = useState(false);
 
-  // Handle Google OAuth token from URL (redirect lands on /dashboard?token=...)
+  // Handle Google OAuth token from URL (if redirected directly to /dashboard?token=...)
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const token = params.get('token');
     if (token) {
-      localStorage.setItem('token', token);
       window.history.replaceState({}, '', '/dashboard');
-      window.location.reload();
+      hydrateFromToken(token).catch(console.error);
     }
-  }, []);
+  }, [hydrateFromToken]);
 
   useEffect(() => {
     const load = async () => {

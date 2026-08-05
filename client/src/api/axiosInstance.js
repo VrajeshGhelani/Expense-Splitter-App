@@ -30,11 +30,17 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Don't redirect if we're already on auth pages or callback
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+
       const path = window.location.pathname;
-      if (!path.startsWith('/auth/callback') && !path.startsWith('/join/')) {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
+      const requestUrl = error.config?.url || '';
+
+      // Don't perform hard window reload if we're already on auth pages, join pages, or if the failed call is login/register
+      const isAuthPage = path === '/login' || path === '/register' || path.startsWith('/auth/') || path.startsWith('/join/');
+      const isAuthApiCall = requestUrl.includes('/api/auth/login') || requestUrl.includes('/api/auth/register');
+
+      if (!isAuthPage && !isAuthApiCall) {
         window.location.href = '/login';
       }
     }
